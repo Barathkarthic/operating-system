@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int main() {
+    int m, n, bay[10], truck[10], best;
+
+    printf("Enter number of parking bays: ");
+    scanf("%d", &m);
+    printf("Enter bay sizes (ft): ");
+    for (int i = 0; i < m; i++) scanf("%d", &bay[i]);
+    printf("Enter number of trucks: ");
+    scanf("%d", &n);
+    printf("Enter truck lengths (ft): ");
+    for (int i = 0; i < n; i++) scanf("%d", &truck[i]);
+
+    printf("\n[BEST FIT] Truck Parking\n");
+    printf("Truck\tLength\tBay\tGap Left\n");
+    for (int i = 0; i < n; i++) {
+        best = -1;
+        for (int j = 0; j < m; j++)                  // smallest bay that still fits
+            if (bay[j] >= truck[i] && (best == -1 || bay[j] < bay[best]))
+                best = j;
+
+        if (best != -1) {
+            printf("%d\t%d\t%d\t%d ft\n", i + 1, truck[i], best + 1, bay[best] - truck[i]);
+            bay[best] -= truck[i];                  // remaining space stays free
+        } else
+            printf("%d\t%d\tNot parked (no bay big enough)\n", i + 1, truck[i]);
+    }
+    return 0;
+}
