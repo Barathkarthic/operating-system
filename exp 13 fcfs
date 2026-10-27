@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, req[20], head, pos, total = 0, move;
+
+    printf("Enter forklift start position (0-199): ");
+    scanf("%d", &head);
+    printf("Enter number of pick-up requests: ");
+    scanf("%d", &n);
+    printf("Enter rack locations: ");
+    for (int i = 0; i < n; i++) scanf("%d", &req[i]);
+
+    pos = head;
+    printf("\n[FCFS] Forklift Movement\n");
+    printf("From\tTo\tMoved\n");
+    for (int i = 0; i < n; i++) {           // serve in order of arrival
+        move = abs(req[i] - pos);
+        printf("%d\t%d\t%d\n", pos, req[i], move);
+        total += move;
+        pos = req[i];
+    }
+    printf("\nTotal Movement  : %d\nAverage Movement : %.2f\n", total, (float)total / n);
+    return 0;
+}
