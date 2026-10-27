@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char name[20][20];
+    int n, cnt = 0, dup;
+    char tmp[20];
+
+    printf("Enter number of items for the shared shelf: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter box label %d: ", i + 1);
+        scanf("%s", tmp);
+        dup = 0;
+        for (int j = 0; j < cnt; j++)          // single level: name must be unique
+            if (strcmp(name[j], tmp) == 0) dup = 1;
+
+        if (dup)
+            printf("[BLOCKED] '%s' already exists on the shelf. Use a unique name.\n", tmp);
+        else
+            strcpy(name[cnt++], tmp);
+    }
+
+    printf("\nSingle Level Directory (Shared Shelf)\n");
+    for (int i = 0; i < cnt; i++) printf("  %d. %s\n", i + 1, name[i]);
+    return 0;
+}
