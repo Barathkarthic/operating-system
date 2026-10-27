@@ -1,0 +1,71 @@
+#include <stdio.h>
+
+int main() {
+    int f, n, req[30], buf[10], last[10], fault = 0, hit, pos;
+    
+    // Input buffer size and number of requests
+    printf("Enter buffer size: ");
+    scanf("%d", &f);
+    
+    printf("Enter number of telemetry requests: ");
+    scanf("%d", &n);
+    
+    printf("Enter sequence (sensor IDs):\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &req[i]);
+    }
+    
+    // Initialize buffer and tracking array to -1 (empty)
+    for (int i = 0; i < f; i++) { 
+        buf[i] = -1; 
+        last[i] = -1; 
+    }
+    
+    printf("\n[LRU] Telemetry Buffer Simulation\n");
+    printf("Sensor\tBuffer\t\tStatus\n");
+    printf("------------------------------------\n");
+    
+    // Process each request
+    for (int i = 0; i < n; i++) {
+        hit = 0;
+        
+        // Check if the requested sensor ID is already in the buffer
+        for (int j = 0; j < f; j++) {
+            if (buf[j] == req[i]) { 
+                hit = 1; 
+                last[j] = i; // Refresh recent use with the current index
+                break; 
+            }
+        }
+        
+        // If it's a miss, find the least recently used slot to replace
+        if (!hit) {
+            pos = 0;
+            for (int j = 1; j < f; j++) {
+                if (last[j] < last[pos]) {
+                    pos = j;
+                }
+            }
+            buf[pos] = req[i];
+            last[pos] = i;
+            fault++;
+        }
+        
+        // Print the current status row
+        printf("%d\t", req[i]);
+        for (int j = 0; j < f; j++) {
+            if (buf[j] == -1) 
+                printf("- ");
+            else 
+                printf("%d ", buf[j]);
+        }
+        printf("\t\t%s\n", hit ? "Hit" : "Miss");
+    }
+    
+    // Display total statistics
+    printf("\nTotal Requests: %d\n", n);
+    printf("Telemetry Misses (Faults): %d\n", fault);
+    printf("Telemetry Hits: %d\n", n - fault);
+    
+    return 0;
+}
