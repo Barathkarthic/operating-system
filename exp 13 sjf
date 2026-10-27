@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, req[20], done[20] = {0}, head, pos, total = 0, move, best;
+
+    printf("Enter forklift start position (0-199): ");
+    scanf("%d", &head);
+    printf("Enter number of pick-up requests: ");
+    scanf("%d", &n);
+    printf("Enter rack locations: ");
+    for (int i = 0; i < n; i++) scanf("%d", &req[i]);
+
+    pos = head;
+    printf("\n[SJF] Forklift Movement\n");
+    printf("From\tTo\tMoved\n");
+    for (int k = 0; k < n; k++) {
+        best = -1;
+        for (int j = 0; j < n; j++) {                  // nearest (shortest) pending request
+            if (!done[j] && (best == -1 || abs(req[j] - pos) < abs(req[best] - pos)))
+                best = j;
+        }
+        move = abs(req[best] - pos);
+        printf("%d\t%d\t%d\n", pos, req[best], move);
+        total += move;
+        pos = req[best];
+        done[best] = 1;
+    }
+    printf("\nTotal Movement    : %d\nAverage Movement : %.2f\n", total, (float)total / n);
+    return 0;
+}
