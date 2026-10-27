@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+
+struct shelf {
+    char owner[10];
+    char item[10][20];
+    int count;
+};
+
+int main() {
+    struct shelf u[2];
+    char tmp[20];
+    int n, dup;
+
+    for (int k = 0; k < 2; k++) {
+        printf("Enter name of person %d: ", k + 1);
+        scanf("%s", u[k].owner);
+        u[k].count = 0;
+
+        printf("Enter number of items for %s's shelf: ", u[k].owner);
+        scanf("%d", &n);
+        for (int i = 0; i < n; i++) {
+            printf("Enter box label %d: ", i + 1);
+            scanf("%s", tmp);
+            dup = 0;
+            for (int j = 0; j < u[k].count; j++) // unique only inside own shelf
+                if (strcmp(u[k].item[j], tmp) == 0) dup = 1;
+
+            if (dup)
+                printf("[BLOCKED] '%s' already exists on %s's shelf.\n", tmp, u[k].owner);
+            else
+                strcpy(u[k].item[u[k].count++], tmp);
+        }
+    }
+
+    printf("\nTwo Level Directory (Fridge)\n");
+    for (int k = 0; k < 2; k++) {
+        printf("%s's Shelf:\n", u[k].owner);
+        for (int i = 0; i < u[k].count; i++) printf("   %s\n", u[k].item[i]);
+    }
+    return 0;
+}
