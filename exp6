@@ -1,0 +1,44 @@
+#include <pthread.h>
+#include <stdio.h>
+
+pthread_mutex_t zone[5];
+
+void *car(void *num) {
+    long id = (long)num;
+
+    int z1 = id < (id + 1) % 5 ? id : (id + 1) % 5;
+    int z2 = id < (id + 1) % 5 ? (id + 1) % 5 : id;
+
+    pthread_mutex_lock(&zone[z1]);
+    pthread_mutex_lock(&zone[z2]);
+
+    printf("[AV car %ld] Reserved Zone %d & %d -> crossing\n", id, z1, z2);
+
+    pthread_mutex_unlock(&zone[z2]);
+    pthread_mutex_unlock(&zone[z1]);
+
+    return NULL;
+}
+
+int main() {
+    pthread_t c[5];
+
+    for (int i = 0; i < 5; i++) {
+        pthread_mutex_init(&zone[i], NULL);
+    }
+
+    for (long i = 0; i < 5; i++) {
+        pthread_create(&c[i], NULL, car, (void *)i);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        pthread_join(c[i], NULL);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        pthread_mutex_destroy(&zone[i]);
+    }
+
+
+    return 0;
+}
