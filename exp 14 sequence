@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int main() {
+    // 20 seats in a row: 1 = already booked, 0 = free
+    int seat[20] = {1,0,0,1,0,1,0,0,1,1,0,1,0,0,1,0,1,0,0,1};
+    int n, start = -1, cnt;
+    
+    printf("Seat Map (X = booked, 0 = free):\n");
+    for (int i = 0; i < 20; i++) printf("%c ", seat[i] ? 'X' : '0');
+    printf("\n");
+    
+    printf("Enter number of consecutive seats required: ");
+    scanf("%d", &n);
+    
+    for (int i = 0; i <= 20 - n && start == -1; i++) {
+        cnt = 0;
+        for (int j = i; j < i + n; j++) {       // need n free seats in a row
+            if (seat[j] == 0) cnt++;
+            else break;
+        }
+        if (cnt == n) start = i;
+    }
+    
+    if (start == -1)
+        printf("[FAILED] %d consecutive seats not available. Booking rejected.\n", n);
+    else {
+        for (int j = start; j < start + n; j++) seat[j] = 1;
+        printf("[SUCCESS] Seats %d to %d booked (Start = %d, Length = %d)\n",
+               start + 1, start + n, start + 1, n);
+    }
+    return 0;
+}
