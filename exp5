@@ -1,0 +1,54 @@
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdio.h>
+
+sem_t wrt;
+pthread_mutex_t mutex;
+int readers = 0;
+int stock_price = 150;
+
+void *reader(void *id) {
+    pthread_mutex_lock(&mutex);
+    if (++readers == 1) {
+        sem_wait(&wrt);
+    }
+    pthread_mutex_unlock(&mutex);
+
+    printf("[App %ld] Stock Price: $%d\n", (long)id, stock_price);
+
+    pthread_mutex_lock(&mutex);
+    if (--readers == 0) {
+        sem_post(&wrt);
+    }
+    pthread_mutex_unlock(&mutex);
+
+    return NULL;
+}
+
+void *writer(void *id) {
+    sem_wait(&wrt);
+    stock_price = 180;
+    printf("[Exchange %ld] Updated Price to: $%d\n", (long)id, stock_price);
+    sem_post(&wrt);
+
+    return NULL;
+}
+int main() {
+    pthread_t r[2], w;
+
+    sem_init(&wrt, 0, 1);
+    pthread_mutex_init(&mutex, NULL);
+
+    pthread_create(&r[0], NULL, reader, (void *)1);
+    pthread_create(&w, NULL, writer, (void *)1);
+    pthread_create(&r[1], NULL, reader, (void *)2);
+
+    pthread_join(r[0], NULL);
+    pthread_join(r[1], NULL);
+    pthread_join(w, NULL);
+
+    sem_destroy(&wrt);
+    pthread_mutex_destroy(&mutex);
+
+    return 0;
+}
