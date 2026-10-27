@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <pthread.h>
+
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t c = PTHREAD_COND_INITIALIZER;
+
+
+int busy[4] = {0, 0, 0, 0};
+
+void* drive(void *a) {
+
+    long i = (long)a;
+    int q1 = i;
+    int q2 = (i + 1) % 4;
+
+    pthread_mutex_lock(&m);
+
+
+    while (busy[q1] || busy[q2]) {
+        pthread_cond_wait(&c, &m);
+    }
+
+    busy[q1] = 1;
+    busy[q2] = 1;
+    pthread_mutex_unlock(&m);
+    printf("Car %ld cleared intersection\n", i);
+
+
+    pthread_mutex_lock(&m);
+    busy[q1] = 0;
+    busy[q2] = 0;
+    pthread_cond_broadcast(&c);
+    pthread_mutex_unlock(&m);
+
+    return NULL;
+}
+int main() {
+    pthread_t t[4];
+
+    for (long i = 0; i < 4; i++) {
+        pthread_create(&t[i], NULL, drive, (void*)i);
+    }
+
+    for (int i = 0; i < 4; i++) {
+        pthread_join(t[i], NULL);
+    }
+
+    return 0;
+}
