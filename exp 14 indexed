@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int main() {
+    // 20 seats in a row: 1 = already booked, 0 = free
+    int seat[20] = {1,0,0,1,0,1,0,0,1,1,0,1,0,0,1,0,1,0,0,1};
+    int idx[20], n, cnt = 0, free_seats = 0;
+
+    printf("Seat Map (X = booked, O = free):\n");
+    for (int i = 0; i < 20; i++) {
+        printf("%c ", seat[i] ? 'X' : 'O');
+        if (!seat[i]) free_seats++;
+    }
+    printf("\n");
+
+    printf("Enter number of seats required: ");
+    scanf("%d", &n);
+
+    if (free_seats < n) {
+        printf("[FAILED] Only %d seats free. Booking rejected.\n", free_seats);
+        return 0;
+    }
+
+    for (int i = 0; i < 20 && cnt < n; i++)    // scattered seats are allowed
+        if (seat[i] == 0) { seat[i] = 1; idx[cnt++] = i + 1; }
+
+    printf("[SUCCESS] Master Receipt (Index Block)\n");
+    for (int i = 0; i < n; i++)
+        printf("Friend %d -> Seat %d\n", i + 1, idx[i]);
+    return 0;
+}
