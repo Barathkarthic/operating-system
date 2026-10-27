@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+int main() {
+    int at[3] = {0, 1, 2}, bt[3] = {6, 4, 2}, ct[3], tat[3], wt[3], cur = 0;
+    float tot_tat = 0, tot_wt = 0;
+
+    for (int i = 0; i < 3; i++) {
+        cur = (cur < at[i]) ? at[i] : cur;
+        ct[i] = cur + bt[i];
+        cur = ct[i];
+
+        tat[i] = ct[i] - at[i];
+        wt[i] = tat[i] - bt[i];
+
+        tot_tat += tat[i];
+        tot_wt += wt[i];
+
+        printf("P%d | CT: %d | TAT: %d | WT: %d\n", i + 1, ct[i], tat[i], wt[i]);
+    }
+
+    printf("Avg TAT: %.2f | Avg WT: %.2f\n", tot_tat / 3, tot_wt / 3);
+
+    return 0;
+}
