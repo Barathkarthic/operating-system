@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int main() {
+    int alloc[3][3] = {{0, 1, 0}, {2, 0, 0}, {3, 0, 2}};
+    int max[3][3] = {{7, 5, 3}, {3, 2, 2}, {9, 0, 2}};
+    int avail[3] = {3, 3, 2}, finish[3] = {0}, seq[3], idx = 0;
+
+    while (idx < 3) {
+        int found = 0;
+        for (int i = 0; i < 3; i++) {
+            if (!finish[i] && (max[i][0] - alloc[i][0] <= avail[0]) &&
+                (max[i][1] - alloc[i][1] <= avail[1]) &&
+                (max[i][2] - alloc[i][2] <= avail[2])) {
+
+                for (int k = 0; k < 3; k++) {
+                    avail[k] += alloc[i][k];
+                }
+                seq[idx++] = i;
+                finish[i] = 1;
+                found = 1;
+            }
+        }
+        if (!found) {
+            printf("Unsafe system!\n");
+            return 0;
+        }
+    }
+
+    printf("Safe sequence: P%d -> P%d -> P%d\n", seq[0], seq[1], seq[2]);
+    return 0;
+}
+
