@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+void* sensor(void* name) {
+    printf("[%s Radar] active and clear \n", (char*)name);
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    char s1[20], s2[20];
+    printf("Enter 2 sensor names: ");
+    scanf("%19s %19s", s1, s2);
+    pthread_create(&t1, NULL, sensor, s1);
+    pthread_create(&t2, NULL, sensor, s2);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+    printf("ADAS system: Safe to drive\n");
+    return 0;
+}
